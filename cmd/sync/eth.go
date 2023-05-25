@@ -64,8 +64,8 @@ func (s *EthSyncMan) Preload(end uint64) {
 		// log.Warn(block)
 
 		txs := block["transactions"].([]any)
-		var receipts []any
-		err = s.ethRpcClient.CallContext(ctx, &receipts, "eth_getBlockReceipts",toBlockNumArg(new(big.Int).SetUint64(start)))
+		var receipts []map[string]any
+		err = s.ethRpcClient.CallContext(ctx, &receipts, "eth_getBlockReceipts", toBlockNumArg(new(big.Int).SetUint64(start)))
 		chk(err)
 
 		if len(txs) != len(receipts) {
@@ -78,6 +78,7 @@ func (s *EthSyncMan) Preload(end uint64) {
 			receiptModels := make([]mongo.WriteModel, len(txs))
 
 			for i, tx := range txs {
+				tx := tx.(map[string]any)
 				tx["height"] = height
 				transactionModels[i] = mongo.NewInsertOneModel().SetDocument(tx)
 			}

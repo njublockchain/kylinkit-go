@@ -40,7 +40,7 @@ func (s *TronSyncMan) Preload(end uint64) {
 	localLatest := getLocalLatestTronBlock(ctx, blockColl)
 	log.Warn(localLatest)
 
-	block := s.tronRpcClient.GetJSONBlockByNumber(nil, true)
+	block := s.tronRpcClient.GetJSONBlockByNumberWithTxs(nil)
 	remoteLatest := block.Number
 	log.Warn(remoteLatest)
 	safeLatest := uint64(*remoteLatest) / 1_000 * 1_000
